@@ -2,7 +2,7 @@ package org.skypro.skyshop.product;
 
 public class Product {
     private final String name;
-    public final int price;
+    private final int price;
 
     public Product(String name, int price) {
         this.name = name;
