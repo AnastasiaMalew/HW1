@@ -1,25 +1,23 @@
 package org.skypro.skyshop;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchEngine {
-    private final Searchable[] items;
-    private int size;
+    private final List<Searchable> items;
 
     public SearchEngine(int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Значение должно быть больше нуля");
         }
-        this.items = new Searchable[capacity];
-        this.size = 0;
+        this.items = new ArrayList<>(capacity);
     }
 
     public void add(Searchable item) {
         if (item == null) {
             return;
         }
-        if (size < items.length) {
-            items[size] = item;
-            size++;
-        }
+        items.add(item);
     }
 
     public Searchable findBestMatch(String query) throws BestResultNotFound {
@@ -31,8 +29,7 @@ public class SearchEngine {
         Searchable bestItem = null;
         int maxCount = -1;
 
-        for (int i = 0; i < size; i++) {
-            Searchable item = items[i];
+        for (Searchable item : items) {
             if (item == null) {
                 continue;
             }
@@ -76,29 +73,24 @@ public class SearchEngine {
         return count;
     }
 
-    public Searchable[] search(String query) {
-        Searchable[] result = new Searchable[5];
-        int count = 0;
+    public List<Searchable> search(String query) {
+        List<Searchable> result = new ArrayList<>();
 
         if (query == null || query.isBlank()) {
             return result;
         }
-        String lowerQuery = query.toLowerCase(); // исправлена опечатка lowerQuerty -> lowerQuery
-        for (int i = 0; i < size; i++) {
-            Searchable item = items[i];
+        String lowerQuery = query.toLowerCase();
+
+        for (Searchable item : items) {
             if (item == null) {
                 continue;
             }
 
             String searchTerm = item.getStringRepresentation();
             if (searchTerm != null && searchTerm.toLowerCase().contains(lowerQuery)) {
-                result[count] = item;
-                count++;
-                if (count == 5) {
-                    break;
+                result.add(item);
                 }
             }
-        }
         return result;
     }
 }

@@ -7,6 +7,7 @@ import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.SimpleProduct;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
@@ -17,11 +18,42 @@ public class App {
         basket.add(new DiscountedProduct("Зеленый чай", 129, 25));
         basket.add(new FixPriceProduct("Гречка"));
 
-        System.out.println("Содержимое корзины");
+        System.out.println("Содержимое корзины до удаления:");
         basket.printBasketContents();
         System.out.println();
 
         System.out.println("Общая стоимость корзины: " + basket.getTotalCost());
+        System.out.println();
+
+        System.out.println("Удаление существующего продукта:");
+        List<Product> removedExisting = basket.removeProductByName("Шоколад");
+
+        System.out.println("Удаленные продукты: ");
+        if (removedExisting.isEmpty()) {
+            System.out.println("Список пуст");
+        } else {
+            for (Product p : removedExisting) {
+                System.out.println(p.toString());
+            }
+        }
+
+        System.out.println("\nСодержимое корзины после удаления Шоколада: ");
+
+        System.out.println("Удаление несуществующего продукта: ");
+        List<Product> removedNonExisting = basket.removeProductByName("Рыба");
+
+        System.out.println("Удаленные продукты");
+        if (removedNonExisting.isEmpty()) {
+            System.out.println("Список пуст");
+        } else {
+            for (Product p : removedNonExisting) {
+                System.out.println(p.toString());
+            }
+        }
+
+        System.out.println("\nСодержимое корзины после попытки удаления Рыбы");
+        basket.printBasketContents();
+        System.out.println();
 
         System.out.println("Есть ли в корзине Зеленый чай? " + basket.containsProductByName("Зеленый чай"));
 
@@ -46,6 +78,8 @@ public class App {
         engine.add(new SimpleProduct("Шоколад", 340));
         engine.add(new DiscountedProduct("Зеленый чай", 129, 25));
         engine.add(new FixPriceProduct("Гречка"));
+        engine.add(new SimpleProduct("Бананы", 150));
+        engine.add(new SimpleProduct("Какао", 250));
 
         testSearch(engine, "молоко");
         testSearch(engine, "чай");
@@ -93,49 +127,29 @@ public class App {
     }
 
     private static void testSearch(SearchEngine engine, String query) {
-        System.out.println("Поиск по запросу");
+        System.out.println("Поиск по запросу: \"" + query + "\"");
 
-        Searchable[] results = engine.search(query);
+        List<Searchable> results = engine.search(query);
 
-        System.out.println((Arrays.toString(results)));
-
-        System.out.println("Найденные элементы: ");
+        System.out.println("Найдено результатов: " + results.size());
+        System.out.println("Результаты: ");
         for (Searchable item : results) {
-           if (item != null) {
-               System.out.println(item.getStringRepresentation());
-           } else {
-               break;
-           }
+            if (item != null) {
+                System.out.println(item.getStringRepresentation());
+            }
         }
+
         System.out.println();
 
-        System.out.println("Проверка findBestMatch и обработки BestResultNotFound:");
+        System.out.println("Проверка findBestMatch и обработки BestResultNotFound: ");
 
         try {
-            engine.add(new SimpleProduct("Растительное молоко", 130));
-            engine.add(new SimpleProduct("Шоколад", 340));
-            engine.add(new DiscountedProduct("Зеленый чай", 129, 25));
-            engine.add(new FixPriceProduct("Гречка"));
-
-            Searchable best = engine.findBestMatch("молоко");
+            Searchable best = engine.findBestMatch(query);
             System.out.println("Лучший результат: " + best.getStringRepresentation());
         } catch (BestResultNotFound e) {
             System.out.println("Ошибка поиска: " + e.getMessage());
         }
-
-        try {
-            SearchEngine engine2 = new SearchEngine(5);
-            // добавим товары
-            engine2.add(new SimpleProduct("Растительное молоко", 130));
-            engine2.add(new SimpleProduct("Шоколад", 340));
-
-            // запрос, которого точно нет
-            Searchable best = engine2.findBestMatch("рыба");
-            System.out.println("Лучший результат: " + best.getStringRepresentation());
-        } catch (BestResultNotFound e) {
-            System.out.println("Ошибка поиска: " + e.getMessage());
-        }
+        System.out.println();
     }
-
 }
 
