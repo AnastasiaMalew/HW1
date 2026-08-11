@@ -1,6 +1,6 @@
 package org.skypro.skyshop;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SearchEngine {
@@ -10,7 +10,7 @@ public class SearchEngine {
         if (capacity <= 0) {
             throw new IllegalArgumentException("Значение должно быть больше нуля");
         }
-        this.items = new ArrayList<>(capacity);
+        this.items = new LinkedList<>();
     }
 
     public void add(Searchable item) {
@@ -74,7 +74,7 @@ public class SearchEngine {
     }
 
     public List<Searchable> search(String query) {
-        List<Searchable> result = new ArrayList<>();
+        List<Searchable> result = new LinkedList<>();
 
         if (query == null || query.isBlank()) {
             return result;

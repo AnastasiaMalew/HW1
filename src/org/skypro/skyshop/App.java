@@ -37,8 +37,9 @@ public class App {
             }
         }
 
-        System.out.println("\nСодержимое корзины после удаления Шоколада: ");
-
+        System.out.println("\nСодержимое корзины после удаления Шоколада:");
+        basket.printBasketContents();
+        System.out.println();
         System.out.println("Удаление несуществующего продукта: ");
         List<Product> removedNonExisting = basket.removeProductByName("Рыба");
 
