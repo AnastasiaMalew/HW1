@@ -6,7 +6,7 @@ import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.SimpleProduct;
 
-import java.util.Arrays;
+import java.util.Map;
 import java.util.List;
 
 public class App {
@@ -40,6 +40,7 @@ public class App {
         System.out.println("\nСодержимое корзины после удаления Шоколада:");
         basket.printBasketContents();
         System.out.println();
+
         System.out.println("Удаление несуществующего продукта: ");
         List<Product> removedNonExisting = basket.removeProductByName("Рыба");
 
@@ -73,14 +74,14 @@ public class App {
 
         System.out.println("Тестирование работы SearchEngine");
 
-        SearchEngine engine = new SearchEngine(5);
+        SearchEngine engine = new SearchEngine();
 
-        engine.add(new SimpleProduct("Растительное молоко", 130));
-        engine.add(new SimpleProduct("Шоколад", 340));
-        engine.add(new DiscountedProduct("Зеленый чай", 129, 25));
-        engine.add(new FixPriceProduct("Гречка"));
-        engine.add(new SimpleProduct("Бананы", 150));
-        engine.add(new SimpleProduct("Какао", 250));
+        engine.addItem(new SimpleProduct("Растительное молоко", 130));
+        engine.addItem(new SimpleProduct("Шоколад", 340));
+        engine.addItem(new DiscountedProduct("Зеленый чай", 129, 25));
+        engine.addItem(new FixPriceProduct("Гречка"));
+        engine.addItem(new SimpleProduct("Бананы", 150));
+        engine.addItem(new SimpleProduct("Какао", 250));
 
         testSearch(engine, "молоко");
         testSearch(engine, "чай");
@@ -130,26 +131,16 @@ public class App {
     private static void testSearch(SearchEngine engine, String query) {
         System.out.println("Поиск по запросу: \"" + query + "\"");
 
-        List<Searchable> results = engine.search(query);
+        Map<String, Searchable> resultsMap = engine.search(query);
 
-        System.out.println("Найдено результатов: " + results.size());
+        System.out.println("Найдено результатов: " + resultsMap.size());
         System.out.println("Результаты: ");
-        for (Searchable item : results) {
+        for (Searchable item : resultsMap.values()) {
             if (item != null) {
                 System.out.println(item.getStringRepresentation());
             }
         }
 
-        System.out.println();
-
-        System.out.println("Проверка findBestMatch и обработки BestResultNotFound: ");
-
-        try {
-            Searchable best = engine.findBestMatch(query);
-            System.out.println("Лучший результат: " + best.getStringRepresentation());
-        } catch (BestResultNotFound e) {
-            System.out.println("Ошибка поиска: " + e.getMessage());
-        }
         System.out.println();
     }
 }
