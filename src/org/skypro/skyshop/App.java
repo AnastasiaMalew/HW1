@@ -8,6 +8,8 @@ import org.skypro.skyshop.product.SimpleProduct;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class App {
     public static void main(String[] args) {
@@ -89,7 +91,32 @@ public class App {
         testSearch(engine, "шоколад");
         testSearch(engine, "рыба");
 
-    System.out.println("Проверка ошибок:");
+        TreeSet<Article> sortedArticles = new TreeSet<>(
+                (a, b) -> {
+                    int lenCompare = Integer.compare(
+                            a.getNameArticle().length(),
+                            b.getNameArticle().length()
+                            );
+                    if (lenCompare !=0) {
+                        return lenCompare;
+                    }
+                    return a.getNameArticle().compareTo(b.getNameArticle());
+                }
+        );
+
+        sortedArticles.add(new Article("Короткая статья", "О Васе"));
+        sortedArticles.add(new Article("Очень длинная-предлинная-предлинная статья", "О Кате"));
+        sortedArticles.add(new Article("Среднячковая статья", "Об Ире"));
+        sortedArticles.add(new Article("Что-то еще", "Об Иване"));
+
+        System.out.println("Статьи в отсортированном порядке: ");
+        for (Article article : sortedArticles) {
+            System.out.println(article.getNameArticle() + " (длина: " + article.getNameArticle().length() + ")");
+        }
+
+        System.out.println();
+
+        System.out.println("Проверка ошибок:");
 
     try {
         basket.add(new SimpleProduct("Странное молоко", 0));
@@ -131,11 +158,12 @@ public class App {
     private static void testSearch(SearchEngine engine, String query) {
         System.out.println("Поиск по запросу: \"" + query + "\"");
 
-        Map<String, Searchable> resultsMap = engine.search(query);
+        Set<Searchable> results = engine.search(query);
 
-        System.out.println("Найдено результатов: " + resultsMap.size());
+        System.out.println("Найдено результатов: " + results.size());
         System.out.println("Результаты: ");
-        for (Searchable item : resultsMap.values()) {
+
+        for (Searchable item : results) {
             if (item != null) {
                 System.out.println(item.getStringRepresentation());
             }
