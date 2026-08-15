@@ -29,28 +29,27 @@ public class SearchEngine {
         }
 
         String lowerQuery = query.toLowerCase();
-        List<Searchable> matches = new ArrayList<>();
+
+        Set<Searchable> result = new TreeSet<>(
+                (a, b) -> {
+                    int lenA = a.getName().length();
+                    int lenB = b.getName().length();
+
+                    if (lenA != lenB) {
+                        return Integer.compare(lenB, lenA);
+                    }
+
+                    return a.getName().compareTo(b.getName());
+                }
+        );
 
         for (Searchable item : itemsByName.values()) {
-            String name = item.getName();
-            if (name != null && name.toLowerCase().contains(lowerQuery)) {
-                matches.add(item);
+            String searchTerm = item.getSearchTerm();
+            if (searchTerm != null && searchTerm.toLowerCase().contains(lowerQuery)) {
             }
         }
 
-        matches.sort((a, b) -> {
-            int lenA = a.getName().length();
-            int lenB = b.getName().length();
-
-            if (lenA != lenB) {
-                return Integer.compare(lenB, lenA);
-            }
-
-            return a.getName().compareTo(b.getName());
-        });
-
-        return new LinkedHashSet<>(matches);
-
+        return result;
     }
 
     public Collection<Searchable> getAllItems() {
