@@ -5,6 +5,7 @@ import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.Article;
 
 import java.util.Map;
 import java.util.List;
@@ -91,28 +92,8 @@ public class App {
         testSearch(engine, "шоколад");
         testSearch(engine, "рыба");
 
-        TreeSet<Article> sortedArticles = new TreeSet<>(
-                (a, b) -> {
-                    int lenCompare = Integer.compare(
-                            a.getNameArticle().length(),
-                            b.getNameArticle().length()
-                            );
-                    if (lenCompare !=0) {
-                        return lenCompare;
-                    }
-                    return a.getNameArticle().compareTo(b.getNameArticle());
-                }
-        );
 
-        sortedArticles.add(new Article("Короткая статья", "О Васе"));
-        sortedArticles.add(new Article("Очень длинная-предлинная-предлинная статья", "О Кате"));
-        sortedArticles.add(new Article("Среднячковая статья", "Об Ире"));
-        sortedArticles.add(new Article("Что-то еще", "Об Иване"));
 
-        System.out.println("Статьи в отсортированном порядке: ");
-        for (Article article : sortedArticles) {
-            System.out.println(article.getNameArticle() + " (длина: " + article.getNameArticle().length() + ")");
-        }
 
         System.out.println();
 
@@ -160,14 +141,13 @@ public class App {
 
         Set<Searchable> results = engine.search(query);
 
-        System.out.println("Найдено результатов: " + results.size());
-        System.out.println("Результаты: ");
+        System.out.println("Найдено: " + results.size() + " шт.");
 
         for (Searchable item : results) {
-            if (item != null) {
-                System.out.println(item.getStringRepresentation());
-            }
+            String name = item.getName();
+            System.out.println(name + " (длина: " + name.length() + ")");
         }
+
 
         System.out.println();
     }

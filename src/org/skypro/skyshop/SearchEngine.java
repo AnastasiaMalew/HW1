@@ -45,9 +45,9 @@ public class SearchEngine {
 
         for (Searchable item : itemsByName.values()) {
             String searchTerm = item.getSearchTerm();
-            if (searchTerm != null && searchTerm.toLowerCase().contains(lowerQuery)) {
-            }
-        }
+            if (searchTerm != null && searchTerm.toLowerCase().contains(lowerQuery))
+        result.add(item);
+    }
 
         return result;
     }
