@@ -5,9 +5,12 @@ import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.Article;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class App {
     public static void main(String[] args) {
@@ -89,7 +92,12 @@ public class App {
         testSearch(engine, "шоколад");
         testSearch(engine, "рыба");
 
-    System.out.println("Проверка ошибок:");
+
+
+
+        System.out.println();
+
+        System.out.println("Проверка ошибок:");
 
     try {
         basket.add(new SimpleProduct("Странное молоко", 0));
@@ -131,15 +139,15 @@ public class App {
     private static void testSearch(SearchEngine engine, String query) {
         System.out.println("Поиск по запросу: \"" + query + "\"");
 
-        Map<String, Searchable> resultsMap = engine.search(query);
+        Set<Searchable> results = engine.search(query);
 
-        System.out.println("Найдено результатов: " + resultsMap.size());
-        System.out.println("Результаты: ");
-        for (Searchable item : resultsMap.values()) {
-            if (item != null) {
-                System.out.println(item.getStringRepresentation());
-            }
+        System.out.println("Найдено: " + results.size() + " шт.");
+
+        for (Searchable item : results) {
+            String name = item.getName();
+            System.out.println(name + " (длина: " + name.length() + ")");
         }
+
 
         System.out.println();
     }
