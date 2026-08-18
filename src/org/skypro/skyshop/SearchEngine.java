@@ -1,6 +1,7 @@
 package org.skypro.skyshop;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SearchEngine {
     private final Map<String, Searchable> itemsByName;
@@ -30,26 +31,21 @@ public class SearchEngine {
 
         String lowerQuery = query.toLowerCase();
 
-        Set<Searchable> result = new TreeSet<>(
-                (a, b) -> {
-                    int lenA = a.getName().length();
-                    int lenB = b.getName().length();
+        return itemsByName.values().stream()
+                .filter(item -> item.getSearchTerm() != null
+                        && item.getSearchTerm().toLowerCase().contains(lowerQuery))
+                .collect(Collectors.toCollection(() -> new TreeSet<>(
+                        (a, b) -> {
+                            int lenA = a.getName().length();
+                            int lenB = b.getName().length();
 
-                    if (lenA != lenB) {
-                        return Integer.compare(lenB, lenA);
-                    }
+                            if (lenA != lenB) {
+                                return Integer.compare(lenB, lenA);
+                            }
 
-                    return a.getName().compareTo(b.getName());
-                }
-        );
-
-        for (Searchable item : itemsByName.values()) {
-            String searchTerm = item.getSearchTerm();
-            if (searchTerm != null && searchTerm.toLowerCase().contains(lowerQuery))
-        result.add(item);
-    }
-
-        return result;
+                            return a.getName().compareTo(b.getName());
+                        }
+                )));
     }
 
     public Collection<Searchable> getAllItems() {
