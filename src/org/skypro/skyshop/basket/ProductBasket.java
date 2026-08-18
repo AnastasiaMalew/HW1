@@ -3,6 +3,7 @@ package org.skypro.skyshop.basket;
 import org.skypro.skyshop.product.Product;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ProductBasket {
     private final Map<String, List<Product>> itemsByProductName;
@@ -22,39 +23,37 @@ public class ProductBasket {
     }
 
     public double getTotalCost() {
-        double total = 0.0;
-        for (List<Product> products : itemsByProductName.values()) {
-            for (Product p : products) {
-                total += p.getPrice();
-            }
-        }
-        return total;
+        return itemsByProductName.values().stream()
+                .flatMap(Collection::stream)
+                .mapToDouble(Product::getPrice)
+                .sum();
+    }
+
+    private long getSpecialCount() {
+        return itemsByProductName.values().stream()
+                .flatMap(Collection::stream)
+                .filter(Product::isSpecial)
+                .count();
     }
 
     public void printBasketContents() {
-        List<Product> allProducts = new LinkedList<>();
-        for (List<Product> products : itemsByProductName.values()) {
-            allProducts.addAll(products);
-        }
+        List<Product> allProducts = itemsByProductName.values().stream()
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
 
         if (allProducts.isEmpty()) {
             System.out.println("В корзине пусто");
             return;
         }
 
-        double total = 0.0;
-        int specialCount = 0;
+        double total = allProducts.stream()
+                .mapToDouble(Product::getPrice)
+                .sum();
 
-        for (Product p : allProducts) {
-            System.out.println(p.toString());
-            total += p.getPrice();
-            if (p.isSpecial()) {
-                specialCount++;
-            }
-        }
+        allProducts.forEach(System.out::println);
 
         System.out.println("Итого: " + total);
-        System.out.println("Специальных товаров: " + specialCount);
+        System.out.println("Специальных товаров: " + getSpecialCount());
     }
 
     public boolean containsProductByName(String name) {
